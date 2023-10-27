@@ -2,44 +2,63 @@
 import os
 import csv
 import numpy as np
+import matplotlib as plt
+import pprint
 
-myFile = open('2022_MeteoCat_Detall_Estacions.csv', 'r')
-reader = csv.DictReader(myFile)
+print = pprint.PrettyPrinter(indent=2)
 
-myList = list()
-for dictionary in reader:
-    myList.append(dictionary)
+def getMatrixFromFile(fileName):
+    file = open(fileName, 'r')
+    reader = csv.reader(file)
+    header = next(reader)  # skip the header row if it exists
+    myList = [ row for row in reader]
+    ndarray = np.array(list(myList))
+    file.close()
+    return ndarray
 
-# ----------------1 
-file= open('2022_MeteoCat_Detall_Estacions.csv')
+# 2- Carregar dades
+ndarray_estacions = getMatrixFromFile('2022_MeteoCat_Detall_Estacions.csv')
+# print(ndarray_estacions)
 
-ndarray_estacions = np.ndarray([])
+ndarray_dades = getMatrixFromFile('MeteoCat_Metadades.csv')
+# print(ndarray_dades)
 
-dades = csv.DictReader(file)
-for fila in dades:
-    #print(list(fila.values()))
-    # print size 
-    # print(len(list(fila.values())))
-    print("." ,end=" " )
-    ndarray_estacions = np.append(ndarray_estacions, [list(fila.values())])
-    
-# remobe first element of ndarray_estacions
-ndarray_estacions = np.delete(ndarray_estacions, 0)
-# slipt the array between 5 columns to generate a (x, 5) array
-new_arr = np.array_split(ndarray_estacions, 5)
-print(ndarray_estacions.shape)
-print(new_arr.shape)
-print(ndarray_estacions[0:5])
-print(new_arr[0])
+ndarray_estacions2 = getMatrixFromFile('2022_MeteoCat_Detall_Estacions2.csv')
+#  print(ndarray_estacions2)
 
-file.close()
-# ----------------2
-        
-# ndarray = np.ndarray(shape=(len(myList),5), dtype=object, buffer=np.array(myList))
-# print(ndarray)
-# np.ndarray((2,), buffer=np.array([1,2,3]), offset=np.int_().itemsize, dtype=int)
+# 3- Visualitza temperatura mitjana del mes de Febrer
+# list dades febrer using ndarray_estacions[x][0]
+# example of data : 2022-01-02,"21:18:00","D5","TN",9.4
+list_dades_febrer = []
+for i in range(len(ndarray_estacions)):
+    if ndarray_estacions[i][0].startswith('2022-02'):
+        list_dades_febrer.append(ndarray_estacions[i])
+
+temps_mitjans = {}
+for dada in list_dades_febrer:
+    data = dada[0]
+    estacio = dada[1]
+    temperatura = float(dada[3])
+    if data not in temps_mitjans:
+        temps_mitjans[data] = {}
+    temps_mitjans[data][estacio] = temperatura
+
+print.pprint(list_dades_febrer)
 
 
-# print(myList[0])
+# # BEGIN: 8f7d6e5a1b2c
+# list_dades_febrer = []
+# for i in range(len(ndarray_estacions)):
+#     if ndarray_estacions[i][0].startswith('2022-02'):
+#         list_dades_febrer.append(ndarray_estacions[i])
 
-myFile.close()
+# temps_mitjans = {}
+# for dada in list_dades_febrer:
+#     estacio = dada[1]
+#     temperatura = float(dada[3])
+#     if estacio not in temps_mitjans:
+#         temps_mitjans[estacio] = []
+#     temps_mitjans[estacio].append(temperatura)
+
+# print(temps_mitjans)
+# # END: 8f7d6e5a1b2c
