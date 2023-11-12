@@ -55,7 +55,7 @@ plt.show()
 
 # EXERCICI 4 PART 1 (histograma)
 temperatures = tm_february["VALOR"]
-temperature_range = (0, 25)
+temperature_range = (-10, 25)
 plt.hist(temperatures, bins=20, range=temperature_range, edgecolor="k")
 plt.xlabel("Temperature (°C)")
 plt.ylabel("Number of Days")
